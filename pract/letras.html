@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control de Tamaño de Texto</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    #controls {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #eee;
+      border-radius: 8px;
+      text-align: center;
+    }
+    button {
+      font-size: 1em;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+    #btn-decrease { background-color: #d9534f; }
+    #btn-reset { background-color: #5bc0de; }
+    #btn-increase { background-color: #5cb85c; }
+
+    /* Estilo para el botón deshabilitado */
+    button:disabled {
+      background-color: #cccccc;
+      color: #666666;
+      cursor: not-allowed;
+    }
+
+    #text-content {
+      border: 1px solid #ddd;
+      padding: 20px;
+      background-color: #fff;
+      /* Definimos el tamaño por defecto aquí */
+      font-size: 16px;
+      /* Transición suave para el cambio de tamaño */
+      transition: font-size 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Controlar Tamaño del Texto</h2>
+
+<div id="controls">
+  <button id="btn-decrease">Disminuir (-)</button>
+  <button id="btn-reset">Resetear</button>
+  <button id="btn-increase">Aumentar (+)</button>
+</div>
+
+<div id="text-content">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+
+    // --- Definición de variables ---
+    const $text = $("#text-content");
+    const $btnIncrease = $("#btn-increase");
+    const $btnDecrease = $("#btn-decrease");
+    const $btnReset = $("#btn-reset");
+
+    // Límites y paso (cuánto cambia en cada clic)
+    const minSize = 5;
+    const maxSize = 28;
+    const step = 2; // Cambiaremos de 2px en 2px
+
+    // Guardamos el tamaño original leyendo la CSS
+    // parseInt() convierte "16px" a solo el número 16
+    const defaultSize = parseInt($text.css("font-size"));
+
+    // --- Funciones de los botones ---
+
+    // 1. Botón AUMENTAR (+)
+    $btnIncrease.on("click", function() {
+      let currentSize = parseInt($text.css("font-size"));
+      let newSize = currentSize + step;
+
+      // Si el nuevo tamaño supera el máximo...
+      if (newSize >= maxSize) {
+        newSize = maxSize; // Lo clavamos en el máximo
+        // DESACTIVAMOS este botón
+        $(this).prop("disabled", true);
+      }
+
+      $btnDecrease.prop("disabled", false);
+
+      $text.css("font-size", newSize + "px");
+    });
+
+    // 2. Botón DISMINUIR (-)
+    $btnDecrease.on("click", function() {
+      let currentSize = parseInt($text.css("font-size"));
+      let newSize = currentSize - step;
+
+      // Si el nuevo tamaño es menor que el mínimo...
+      if (newSize <= minSize) {
+        newSize = minSize; // Lo clavamos en el mínimo
+        $(this).prop("disabled", true);
+      }
+
+      // IMPORTANTE: Si estábamos en el máximo y reducimos,
+      // debemos reactivar el botón de Aumentar.
+      $btnIncrease.prop("disabled", false);
+
+      $text.css("font-size", newSize + "px");
+    });
+
+    // 3. Botón RESETEAR
+    $btnReset.on("click", function() {
+      // Volvemos al tamaño por defecto
+      $text.css("font-size", defaultSize + "px");
+
+      // Nos aseguramos de que el botón Aumentar se reactive
+      $btnIncrease.prop("disabled", false);
+      $btnDecrease.prop("disabled", false);
+    });
+
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cambiador de Color de Fondo Pg1</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+      /* Agregamos una transición suave para el cambio de color */
+      transition: background-color 0.5s ease;
+    }
+    select, button {
+      font-size: 1.2em;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Cambiador de Color de Fondo Pg1</h1>
+
+<div>
+  <label for="color-selector">Elige un color:</label>
+  <select id="color-selector">
+    <option value="white">Blanco</option>
+    <option value="lightblue">Celeste</option>
+    <option value="lightgreen">Verde Claro</option>
+    <option value="#f5cba7">Naranja Claro</option>
+    <option value="#333333">Gris Oscuro</option>
+  </select>
+
+  <button id="change-color-btn">Cambiar Fondo</button>
+  <a href="pag2.html"><button>Pag 1</button></a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+
+    // --- PARTE NUEVA: Se ejecuta al cargar la página ---
+    // 1. Revisa si hay un color guardado en la "memoria" del navegador
+    let colorGuardado = localStorage.getItem('miColorDeFondo');
+
+    // 2. Si existe un color guardado...
+    if (colorGuardado) {
+      // ...aplícalo inmediatamente al body
+      $("body").css("background-color", colorGuardado);
+
+      // Opcional: Sincroniza el <select> para que muestre ese color
+      $("#color-selector").val(colorGuardado);
+
+      // Opcional: Ajusta el texto si el fondo es oscuro
+      if (colorGuardado === '#333333') {
+        $("body").css("color", "white");
+      } else {
+        $("body").css("color", "black");
+      }
+    }
+
+    // --- PARTE MODIFICADA: Se ejecuta al hacer clic en el botón ---
+    $("#change-color-btn").on("click", function() {
+
+      let colorSeleccionado = $("#color-selector").val();
+
+      // 1. Aplica el color al body (como antes)
+      $("body").css("background-color", colorSeleccionado);
+
+      // 2. ¡NUEVO! Guarda el color en localStorage para recordarlo
+      localStorage.setItem('miColorDeFondo', colorSeleccionado);
+
+      // Opcional: Ajusta el texto si el fondo es oscuro
+      if (colorSeleccionado === '#333333') {
+        $("body").css("color", "white");
+      } else {
+        $("body").css("color", "black");
+      }
+    });
+
+  });
+</script>
+
+
+</body>
+</html>

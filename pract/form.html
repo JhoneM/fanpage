@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario con Validación</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+    }
+    #contact-form {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    #contact-form h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+    #contact-form div {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="email"] {
+      width: calc(100% - 20px); /* Ajuste para el padding */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1em;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* ----- Clases para la Validación ----- */
+
+    /* El div de mensajes (oculto por defecto) */
+    #feedback-message {
+      display: none; /* Oculto hasta que lo mostremos con jQuery */
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* Estilo para el mensaje de ÉXITO (verde) */
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    /* Estilo para el mensaje de ERROR (rojo) */
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    /* Estilo para los campos con ERROR (borde rojo) */
+    .error-field {
+      border: 2px solid #721c24 !important; /* !important para sobreescribir */
+    }
+  </style>
+</head>
+<body>
+
+<form id="contact-form" novalidate>
+  <h2>Contacto</h2>
+
+  <div id="feedback-message"></div>
+
+  <div>
+    <label for="name">Nombre:</label>
+    <input type="text" id="name" name="name">
+  </div>
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email">
+  </div>
+
+  <button type="submit">Enviar</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+
+    // 1. Escuchamos el evento 'submit' del formulario
+    $("#contact-form").on("submit", function(event) {
+
+      // 2. ¡MUY IMPORTANTE! Evitamos que el formulario se envíe
+      //    de la forma tradicional (recargando la página).
+      event.preventDefault();
+
+      // 3. Referencias a nuestros elementos
+      let $name = $("#name");
+      let $email = $("#email");
+      let $feedback = $("#feedback-message");
+
+      let isValid = true; // Una bandera para rastrear la validez
+
+      // 4. --- RESETEO ---
+      //    Quitamos las clases de error de los campos
+      //    antes de volver a validar.
+      $("input").removeClass("error-field");
+
+      // Ocultamos y reseteamos el mensaje de feedback
+      $feedback.hide().removeClass("success-message error-message");
+
+      // 5. --- VALIDACIÓN ---
+
+      // Validamos el nombre (no puede estar vacío)
+      // .trim() quita espacios en blanco al inicio y al final
+      if ($name.val().trim() === "") {
+        isValid = false;
+        $name.addClass("error-field");
+      }
+
+      // Validamos el email (no puede estar vacío)
+      if ($email.val().trim() === "") {
+        isValid = false;
+        $email.addClass("error-field");
+      }
+
+      // 6. --- MOSTRAR RESULTADO ---
+
+      if (isValid) {
+        // Si todo está OK (verde)
+        $feedback.text("Felicidades, formulario enviado")
+          .addClass("success-message")
+          .show(); // .show() es lo opuesto a .hide()
+
+        // Opcional: Limpiar el formulario después del éxito
+        $("#contact-form")[0].reset();
+
+      } else {
+        // Si hay errores (rojo)
+        $feedback.text("Error, debe completar todos los campos")
+          .addClass("error-message")
+          .show();
+      }
+    });
+
+  });
+</script>
+
+</body>
+</html>
