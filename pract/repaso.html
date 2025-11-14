@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repaso Práctico CSS y JS</title>
+
+  <style>
+    /* ============================================================
+     1. RESETEO Y MODELO DE CAJA (Box Model)
+     ============================================================
+    */
+
+    /* * El selector universal resetea márgenes y paddings por defecto
+     * [cite_start]que ponen los navegadores[cite: 378, 380].
+     * 'box-sizing: border-box;' hace que el padding y el borde
+     * se incluyan en el ancho (width) y alto (height) totales.
+    */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    h2 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #007BFF;
+      padding-bottom: 5px;
+    }
+
+    /* Contenedor genérico para las demos */
+    .demo-container {
+      background-color: #e9e9e9;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    /* Demo de Box Model con sintaxis "shorthand" */
+    .box-model-demo {
+      background-color: #d4edda;
+      border: 5px solid #155724;
+
+      [cite_start]/* * Shorthand (atajo) para márgenes[cite: 337]:
+             * [cite_start]2 valores: 10px (top/bottom), 20px (left/right) [cite: 339-341].
+            */
+      margin: 10px 20px;
+
+      /* * Shorthand (atajo) para padding:
+       * 4 valores: 5px (top), 10px (right), 15px (bottom), 20px (left)
+       * (en sentido del reloj) [cite_start][cite: 343].
+      */
+      padding: 5px 10px 15px 20px;
+    }
+
+    /* ============================================================
+     2. POSICIONAMIENTO (Position)
+     ============================================================
+    */
+
+    /* * El TRUCO CLAVE: El padre 'relative' sirve como "ancla"
+     * [cite_start]para sus hijos 'absolute' [cite: 519-520].
+    */
+    .position-parent {
+      position: relative; /* 1. ESTE ES EL ANCESTRO POSICIONADO */
+      height: 200px;
+      background-color: #fff3cd;
+      border: 2px solid #ffeeba;
+    }
+
+    .position-child-abs {
+      /* * 'absolute': Sale del flujo normal.
+       * Se posiciona (con top/right/bottom/left) respecto
+       * [cite_start]al 'position-parent' (porque es su ancestro posicionado)[cite: 515, 519].
+      */
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 100px;
+      height: 100px;
+      background-color: #f8d7da;
+      z-index: 10; [cite_start]/* Un z-index más alto se pone por encima [cite: 535] */
+    }
+
+    .position-child-rel {
+      /* * 'relative': Sigue en el flujo normal, PERO
+       * se puede desplazar (con top/left) DESDE su
+       * posición original. [cite_start]El espacio original se respeta [cite: 497-499].
+      */
+      position: relative;
+      top: 20px;
+      left: 20px;
+      width: 100px;
+      height: 100px;
+      background-color: #d1ecf1;
+      z-index: 5;
+    }
+
+    .position-fixed {
+      /* * 'fixed': Sale del flujo. Se posiciona SIEMPRE
+       * [cite_start]respecto a la ventana del navegador[cite: 522, 526].
+       * No se mueve con el scroll.
+      */
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      z-index: 100;
+    }
+
+    /* ============================================================
+     3. LAYOUT ANTIGUO - FLOAT
+     ============================================================
+    */
+
+    .float-left {
+      float: left; [cite_start]/* Flota a la izquierda [cite: 439] */
+    width: 40%;
+    height: 80px;
+    background-color: #aaa;
+    }
+
+    .float-right {
+      float: right; [cite_start]/* Flota a la derecha [cite: 440] */
+    width: 40%;
+    height: 80px;
+    background-color: #ccc;
+    }
+
+    /* * EL PROBLEMA: El 'float-container' colapsa (pierde su altura)
+     * [cite_start]porque sus hijos están "flotando" y fuera del flujo normal [cite: 468-469].
+    */
+    .float-container {
+      border: 2px dashed red;
+    }
+
+    /* * SOLUCIÓN 1: El "clearfix" con un div vacío.
+     * [cite_start]Este div (en el flujo) "limpia" los floats anteriores[cite: 477].
+    */
+    .clear-both-div {
+      clear: both; [cite_start]/* 'both' limpia floats izquierdos y derechos [cite: 466] */
+    }
+
+    /* * SOLUCIÓN 2 (Mejor): El "clearfix" con overflow.
+     * Aplicar 'overflow: hidden' o 'auto' al contenedor padre
+     * [cite_start]mágicamente hace que contenga a los hijos flotados[cite: 472].
+    */
+    .clearfix-overflow {
+      overflow: hidden; /* O auto */
+    }
+
+
+    /* ============================================================
+     4. LAYOUT ANTIGUO - INLINE-BLOCK
+     ============================================================
+    */
+
+    .inline-block-child {
+      /* * Se comporta como 'inline' (uno al lado del otro)
+       * pero acepta 'width', 'height', 'margin' y 'padding'
+       * [cite_start]como si fuera 'block' [cite: 410-411].
+      */
+      display: inline-block;
+      width: 30%;
+      height: 60px;
+      background-color: #b8daff;
+    }
+
+    /* * EL PROBLEMA: 'inline-block' deja un espacio en blanco
+     * [cite_start]entre elementos (porque los trata como "palabras") [cite: 425-427].
+     * * LA SOLUCIÓN: Está en el HTML. Pega las etiquetas de cierre
+     * y apertura (</article><article>) o usa un comentario
+     * (</article><article>) [cite_start][cite: 430-434].
+    */
+
+    /* ============================================================
+     5. LAYOUT MODERNO - FLEXBOX Y GRID
+     ============================================================
+    */
+
+    [cite_start]/* FLEXBOX (Unidireccional) [cite: 625] */
+    .flex-container {
+      display: flex; [cite_start]/* Activa Flexbox en el padre [cite: 628] */
+    height: 100px;
+      background-color: #d6d8db;
+
+      /* 'justify-content' alinea en el eje principal (horizontal) */
+      justify-content: center; /* centrado */
+      /* justify-content: space-between; */ /* espaciado */
+
+      /* 'align-items' alinea en el eje secundario (vertical) */
+      align-items: center; /* centrado vertical */
+    }
+
+    .flex-child {
+      width: 80px;
+      height: 80px;
+      background-color: #5bc0de;
+    }
+
+    [cite_start]/* GRID (Bidireccional) [cite: 644] */
+    .grid-container {
+      display: grid; [cite_start]/* Activa Grid en el padre [cite: 647] */
+
+      /* * Define 3 columnas. '1fr' significa "1 fracción
+       * del espacio disponible". Esto crea 3 columnas iguales.
+      */
+    grid-template-columns: 1fr 1fr 1fr;
+
+      /* 'gap' es el espacio entre los hijos */
+      gap: 10px; [cite_start]/* [cite: 649] */
+    }
+
+    .grid-child {
+      height: 60px;
+      background-color: #5cb85c;
+      text-align: center;
+      padding-top: 20px;
+    }
+
+    /* ============================================================
+     6. SELECTORES CSS
+     ============================================================
+    */
+
+    /* Selector de Pseudo-clase: se activa con una acción */
+    .selector-demo a:hover {
+      [cite_start]/* Se aplica al link cuando el mouse está encima [cite: 315] */
+      color: red;
+      font-weight: bold;
+    }
+
+    /* Selector Combinado (descendiente) */
+    .selector-demo article p {
+      /* Solo selecciona párrafos DENTRO de un article */
+      font-style: italic;
+    }
+
+    /* Selector de Pseudo-clase (estructural) */
+    .selector-demo ul li:first-child {
+      [cite_start]/* Selecciona SÓLO el primer <li> de un <ul> [cite: 843] */
+      color: #007BFF;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+
+<h1>Hoja de Repaso Práctica</h1>
+<p>Este archivo no necesita internet. Los ejemplos de jQuery son SINTAXIS (no se ejecutarán), pero los de JS Puro sí funcionarán.</p>
+
+<h2>1. Modelo de Caja (Box Model)</h2>
+<div class="box-model-demo">
+  Este div tiene márgenes y paddings definidos con "shorthand".
+</div>
+
+<h2>2. Posicionamiento (Position)</h2>
+<div class="demo-container">
+  <div class="position-parent">
+    Soy el padre (position: relative).
+    <div class="position-child-abs">
+      Soy un hijo (position: absolute). Me posiciono <strong>respecto a mi padre relative</strong>. Tengo z-index: 10.
+    </div>
+    <div class="position-child-rel">
+      Soy un hijo (position: relative). Me muevo <strong>desde mi lugar original</strong>. Tengo z-index: 5.
+    </div>
+  </div>
+</div>
+
+<div class="position-fixed">
+  Soy (position: fixed). Me quedo fijo en la ventana.
+</div>
+
+<h2>3. Layout con Float</h2>
+
+<h3>Problema: Contenedor Colapsado</h3>
+<div class="demo-container float-container">
+  <div class="float-left">Float Left</div>
+  <div class="float-right">Float Right</div>
+</div>
+
+<h3>Solución 1: div con 'clear: both'</h3>
+<div class="demo-container float-container">
+  <div class="float-left">Float Left</div>
+  <div class="float-right">Float Right</div>
+  <div class="clear-both-div"></div>
+</div>
+
+<h3>Solución 2: 'overflow: hidden' en el padre</h3>
+<div class="demo-container float-container clearfix-overflow">
+  <div class="float-left">Float Left</div>
+  <div class="float-right">Float Right</div>
+</div>
+
+<h2>4. Layout con 'inline-block'</h2>
+
+<h3>Problema: El espacio fantasma</h3>
+<div class="demo-container">
+  <article class="inline-block-child">(Hijo 1)</article>
+  <article class="inline-block-child">(Hijo 2)</article>
+  <article class="inline-block-child">(Hijo 3)</article>
+</div>
+
+<h3>Solución: Pegar las etiquetas en el HTML</h3>
+<div class="demo-container">
+  <article class="inline-block-child">(Hijo 1)</article><article class="inline-block-child">(Hijo 2)</article><article class="inline-block-child">(Hijo 3)</article>
+</div>
+
+<h2>5. Layout Moderno: Flexbox</h2>
+<div class="flex-container">
+  <div class="flex-child"></div>
+  <div class="flex-child"></div>
+</div>
+
+<h2>5. Layout Moderno: Grid</h2>
+<div class="grid-container">
+  <div class="grid-child">Col 1</div>
+  <div class="grid-child">Col 2</div>
+  <div class="grid-child">Col 3</div>
+  <div class="grid-child">Col 4</div>
+  <div class="grid-child">Col 5</div>
+  <div class="grid-child">Col 6</div>
+</div>
+
+<h2>6. Selectores CSS</h2>
+<div class="demo-container selector-demo">
+  <a href="#">Pasa el mouse sobre mí (a:hover)</a>
+
+  <article>
+    <p>Este 'p' está en un 'article' (se pone itálico).</p>
+  </article>
+
+  <ul>
+    <li>Soy el li:first-child (color azul)</li>
+    <li>Soy el segundo li</li>
+    <li>Soy el tercer li</li>
+  </ul>
+</div>
+
+<h2>7. Sintaxis JS (DOM) vs jQuery</h2>
+<div class="demo-container">
+  <input type="text" id="myInput" value="Valor de prueba">
+  <button id="myButton">Haz Clic</button>
+  <div id="text-change" style="margin-top: 10px;">Texto original...</div>
+</div>
+
+
+<script>
+  /* * ======================================
+   * [cite_start]SINTAXIS JQUERY (SOLO REFERENCIA) [cite: 787]
+   * ======================================
+   */
+
+  /*
+  [cite_start]// 1. FUNCIÓN READY: Espera a que el HTML esté cargado [cite: 813-814].
+  $(document).ready(function() {
+
+      [cite_start]// 2. SELECCIÓN: El $() es el selector[cite: 809].
+      const $btn = $("#myButton"); [cite_start]// Selecciona por ID [cite: 828]
+      const $box = $(".box-model-demo"); [cite_start]// Selecciona por Clase [cite: 830]
+      const $input = $("#myInput");
+      const $textDiv = $("#text-change");
+
+      [cite_start]// 3. EVENTO CLICK: [cite: 866]
+      $btn.on("click", function() {
+
+          [cite_start]// 4. CAMBIAR CSS: .css() [cite: 793]
+          $box.css("background-color", "lightyellow");
+
+          [cite_start]// 5. OBTENER VALOR: .val() [cite: 876]
+          const valor = $input.val();
+
+          [cite_start]// 6. PONER TEXTO: .text() [cite: 875]
+          $textDiv.text("Clickeado! El valor del input es: " + valor);
+
+          // 7. 'this': Se refiere al elemento que disparó el evento
+          // $(this) lo envuelve en un objeto jQuery.
+          $(this).text("¡Clickeado!");
+      });
+
+      [cite_start]// Evento HOVER [cite: 869]
+      $box.on("hover", function() {
+          // Función para mouse-in
+          $(this).css("border-color", "blue");
+      }, function() {
+          // Función para mouse-out
+          $(this).css("border-color", "#155724");
+      });
+
+  });
+  */
+
+
+  /* * ======================================
+   * JAVASCRIPT PURO (VANILLA JS) (ESTO SÍ FUNCIONA)
+   * ======================================
+   */
+
+  // 1. FUNCIÓN "READY": Espera a que el HTML esté cargado
+  document.addEventListener("DOMContentLoaded", function() {
+
+    [cite_start]// 2. SELECCIÓN: [cite: 737-738]
+    const btn = document.querySelector("#myButton");
+    const box = document.querySelector(".box-model-demo");
+    const input = document.querySelector("#myInput");
+    const textDiv = document.querySelector("#text-change");
+
+    [cite_start]// 3. EVENTO CLICK: [cite: 741, 757]
+    btn.addEventListener("click", function(e) {
+
+      [cite_start]// 'e' es el objeto evento, contiene info del clic [cite: 777]
+
+      // 4. CAMBIAR CSS:
+      box.style.backgroundColor = "lightyellow"; // Nota: JS usa camelCase
+
+      // 5. OBTENER VALOR:
+      const valor = input.value;
+
+      // 6. PONER TEXTO:
+      textDiv.textContent = "Clickeado! El valor del input es: " + valor;
+
+      [cite_start]// 7. 'this': Se refiere al elemento que disparó el evento (btn) [cite: 767]
+      this.textContent = "¡Clickeado!";
+    });
+
+    // Evento HOVER (con mouseover y mouseout)
+    box.addEventListener("mouseover", function() {
+      this.style.borderColor = "blue";
+    });
+
+    box.addEventListener("mouseout", function() {
+      this.style.borderColor = "#155724";
+    });
+  });
+
+</script>
+
+</body>
+</html>
